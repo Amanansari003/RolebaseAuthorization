@@ -13,7 +13,7 @@ namespace RoleBasedAuthorization.Services
 
             var context = services.GetRequiredService<AppDbContext>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+            var userManager = services.GetRequiredService<UserManager<Users>>();
             var logger = services.GetRequiredService<ILogger<SeedService>>();
 
             try

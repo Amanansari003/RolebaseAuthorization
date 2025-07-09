@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RoleBasedAuthorization.Data;
+using RoleBasedAuthorization.Models;
 using RoleBasedAuthorization.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<Users, IdentityRole>(options =>
     {
         // Password settings
         options.Password.RequireDigit = true;
@@ -35,6 +36,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     })
         .AddEntityFrameworkStores<AppDbContext>()
         .AddDefaultTokenProviders();
+
+
 
 var app = builder.Build();
 await SeedService.SeedDatabaseAsync(app.Services);
