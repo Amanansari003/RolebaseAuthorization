@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RoleBasedAuthorization.Data;
+using RoleBasedAuthorization.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
         .AddDefaultTokenProviders();
 
 var app = builder.Build();
+await SeedService.SeedDatabaseAsync(app.Services);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
