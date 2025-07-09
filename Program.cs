@@ -1,7 +1,39 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using RoleBasedAuthorization.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+    {
+        // Password settings
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = true;
+
+        // SignIn settings
+        options.SignIn.RequireConfirmedEmail = false;
+        options.SignIn.RequireConfirmedPhoneNumber = false;
+        options.SignIn.RequireConfirmedAccount = false;
+        options.SignIn.RequireConfirmedPhoneNumber = false;
+
+        // Lockout settings
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+
+        // User settings
+        options.User.RequireUniqueEmail = true;
+    })
+        .AddEntityFrameworkStores<AppDbContext>()
+        .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -16,6 +48,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
