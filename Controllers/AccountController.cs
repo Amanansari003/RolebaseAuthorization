@@ -91,5 +91,41 @@ namespace RoleBasedAuthorization.Controllers
             }
             return View(model);
         }
+
+        [HttpGet]
+        public IActionResult VerifyEmail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VerifyEmail(VerifyEmailViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "User not found.");
+                return View(model);
+            }
+            else
+            {
+                return RedirectToAction("ChangesPassword", "Account", new { userName = user.UserName });
+            }
+
+            // var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Scheme);
+
+            // // Here you would typically send the email with the confirmation link
+            // // For demonstration purposes, we will just return the URL
+            // ViewBag.CallbackUrl = callbackUrl;
+
+            // return View("VerifyEmailSuccess");
+        }
     }
 }

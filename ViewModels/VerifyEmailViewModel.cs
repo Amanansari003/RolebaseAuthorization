@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RoleBasedAuthorization.ViewModels
 {
-    public class VarifyEmailViewModel
+    public class VerifyEmailViewModel
     {
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email format.")]
