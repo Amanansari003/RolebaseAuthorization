@@ -65,11 +65,12 @@ namespace RoleBasedAuthorization.Services
             {
                 logger.LogError(ex, "An error occurred while seeding the database.");
             }
-        }  
+        }
 
         private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager, string roleName)
         {
-            if (!await roleManager.RoleExistsAsync(roleName))
+            var roleExist = await roleManager.RoleExistsAsync(roleName);
+            if (!roleExist)
             {
                 var role = new IdentityRole(roleName);
                 var result = await roleManager.CreateAsync(role);
@@ -86,6 +87,6 @@ namespace RoleBasedAuthorization.Services
             {
                 Console.WriteLine($"Role '{roleName}' already exists.");
             }
-        } 
+        }
     }
 }
