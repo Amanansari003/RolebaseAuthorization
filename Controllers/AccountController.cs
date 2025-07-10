@@ -115,7 +115,7 @@ namespace RoleBasedAuthorization.Controllers
             }
             else
             {
-                return RedirectToAction("ChangesPassword", "Account", new { userName = user.UserName });
+                return RedirectToAction("ChangePassword", "Account", new { userName = user.UserName });
             }
 
             // var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -126,6 +126,47 @@ namespace RoleBasedAuthorization.Controllers
             // ViewBag.CallbackUrl = callbackUrl;
 
             // return View("VerifyEmailSuccess");
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword(string userName)
+        {
+            if (string.IsNullOrEmpty(userName))
+            {
+                return RedirectToAction("VerifyEmail");
+            }
+            var model = new ChangePasswordViewModel { Email = userName };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "User not found.");
+                return View(model);
+            }
+
+            var result = await userManager.RemovePasswordAsync(user);
+            if (result.Succeeded)
+            {
+                result = await userManager.AddPasswordAsync(user, model.NewPassword);
+                return RedirectToAction("Login");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
         }
     }
 }
