@@ -10,12 +10,14 @@
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-link nav-link">Logout</button>
             </form>
-        </li>   
+        </li>
     }
     else
     {
         <li class="nav-item">
             <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
         </li>
     }
