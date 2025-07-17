@@ -42,6 +42,7 @@ namespace RoleBasedAuthorization.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
@@ -158,7 +159,7 @@ namespace RoleBasedAuthorization.Controllers
             var result = await userManager.RemovePasswordAsync(user);
             if (result.Succeeded)
             {
-                result = await userManager.AddPasswordAsync(user, model.NewPassword);
+                _ = await userManager.AddPasswordAsync(user, model.NewPassword);
                 return RedirectToAction("Login");
             }
 
